@@ -65,7 +65,7 @@ function OrderInvoice({ order }) {
               </tr>
               <tr>
                 <th>Total Order Amount</th>
-                <td>$${order.totalAmount}</td>
+                <td>$${order?.totalAmount}</td>
               </tr>
             </table>
             <h1>Products</h1>

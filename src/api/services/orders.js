@@ -52,8 +52,8 @@ const updateOrderById = (orderId, updatedData, callback) => {
     url: `${BASE_URL}/edit-order`,
     data: {
       orderId: orderId,
-      status: updatedData.status,
-      paymentStatus: updatedData.paymentStatus,
+      status: updatedData?.status,
+      paymentStatus: updatedData?.paymentStatus,
     },
   })
     .then((response) => {

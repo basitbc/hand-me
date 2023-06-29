@@ -6,6 +6,7 @@ const accountActions = {
   UPDATE_MODE: "UPDATE_MODE",
   UPDATE_ACCOUNT_ID: "UPDATE_ACCOUNT_ID",
   UPDATE_ACCOUNT_DATA: "UPDATE_ACCOUNT_DATA",
+  GET_CUSTOMER_ACCOUNT: "GET_CUSTOMER_ACCOUNT",
 
   getAllAccounts: (adminId) => {
     return (dispatch) => {
@@ -27,6 +28,33 @@ const accountActions = {
           console.log("Error occurred in getting accounts");
         }
       });
+    };
+  },
+  getCustomerAccount: (customerId, selectedYear, selectedMonth) => {
+    return (dispatch) => {
+      dispatch({
+        type: accountActions.UPDATE_LOADING,
+        payload: true,
+      });
+      accounts.getCustomerAccount(
+        customerId,
+        selectedYear,
+        selectedMonth,
+        (response) => {
+          if (response.status === "success") {
+            dispatch({
+              type: accountActions.GET_CUSTOMER_ACCOUNT,
+              payload: response.data.data,
+            });
+            dispatch({
+              type: accountActions.UPDATE_LOADING,
+              payload: false,
+            });
+          } else {
+            console.log("Error occurred in getting accounts");
+          }
+        }
+      );
     };
   },
   deleteAccount: (accountId, adminId) => {

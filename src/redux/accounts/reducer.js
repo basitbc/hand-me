@@ -1,6 +1,7 @@
 import accountActions from "./actions";
 
 const initialState = {
+  customerAccount: [],
   accounts: [],
   loading: false,
   mode: "view",
@@ -13,6 +14,11 @@ const accountReducer = (state = initialState, action) => {
       return {
         ...state,
         accounts: action.payload,
+      };
+    case accountActions.GET_CUSTOMER_ACCOUNT:
+      return {
+        ...state,
+        account: action.payload,
       };
     case accountActions.UPDATE_LOADING:
       return {

@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import orderActions from "../../redux/orders/actions";
 
 const Order = (props) => {
-  const { getAllOrders, route, auth, order } = props;
+  const { getAllOrders, route, auth, order, navigation } = props;
   useEffect(() => {
     getAllOrders(auth?.customer?.user?._id);
     console.log(order?.orders?.data?.products, "orders");
@@ -23,6 +23,7 @@ const Order = (props) => {
         orderNo={item?.orderId}
         totalAmount={item?.totalAmount}
         status={item?.status}
+        usedIn="Order"
       />
     );
   };
@@ -34,6 +35,8 @@ const Order = (props) => {
         isFilter={true}
         isCart={true}
         isSetting={false}
+        navigation={navigation}
+        isBack={true}
       />
       <View style={styles.subContainer}>
         <Card customStyle={styles.headingBorder}>
@@ -52,9 +55,11 @@ const Order = (props) => {
             </View>
           </View>
         </Card>
-        <FlatList data={order?.orders?.data} renderItem={onRenderItem} />
-
-        <View />
+        {orders?.data?.length > 0 ? (
+          <FlatList data={orders.data} renderItem={onRenderItem} />
+        ) : (
+          <Text style={styles.noOrdersText}>No orders found.</Text>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -93,11 +98,10 @@ const styles = StyleSheet.create({
     lineHeight: 15,
     color: "#000000",
   },
-  headingBorder: {
-    backgroundColor: "#fff",
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    marginTop: 10,
-    paddingVertical: 20,
+  noOrdersText: {
+    alignSelf: "center",
+    marginTop: 20,
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });

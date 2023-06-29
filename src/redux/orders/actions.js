@@ -1,4 +1,5 @@
 import orders from "../../api/services/orders";
+import cartActions from "../cart/actions";
 
 const orderActions = {
   CREATE_ORDER: "CREATE_ORDER",
@@ -12,6 +13,8 @@ const orderActions = {
   ACTIVE_PANEL: "ACTIVE_PANEL",
   SHOW_FILTERED_ORDERS: "SHOW_FILTERED_ORDERS",
   SELECTED_ORDERS: "SELECTED_ORDERS",
+  SHOW_MESSAGE: "SHOW_MESSAGE",
+  CLEAR_MESSAGE: "CLEAR_MESSAGE",
 
   createOrder: (orderData) => {
     return (dispatch) => {
@@ -22,17 +25,40 @@ const orderActions = {
         payload: true,
       });
       orders.createOrder(orderData, (response) => {
-        if (response) {
+        console.log(response, "rrrr1");
+        if (response?.data?.result?.success === true) {
+          dispatch({
+            type: cartActions.CLEAR_CART,
+          });
+          dispatch({
+            type: orderActions.SHOW_MESSAGE,
+            payload: response.data.result,
+          });
+          setTimeout(() => {
+            dispatch({
+              type: orderActions.CLEAR_MESSAGE,
+            });
+          }, 3000);
           dispatch({
             type: orderActions.CREATE_ORDER,
-            payload: response.data,
+            payload: response.data.data,
           });
           dispatch({
             type: orderActions.UPDATE_LOADING,
             payload: false,
           });
         } else {
-          console.log("Error occurred in creating the order");
+          console.log("Error occurred in creating the order1");
+          console.log(response, "err");
+          dispatch({
+            type: orderActions.SHOW_MESSAGE,
+            payload: response.data.result,
+          });
+          setTimeout(() => {
+            dispatch({
+              type: orderActions.CLEAR_MESSAGE,
+            });
+          }, 3000);
         }
       });
     };
@@ -143,6 +169,9 @@ const orderActions = {
   resetState: () => ({
     type: orderActions.RESET_STATE,
   }),
+  clearMessage: () => ({
+    type: orderActions.CLEAR_MESSAGE,
+  }),
 
   showFilteredOrders: (orders) => ({
     type: orderActions.SHOW_FILTERED_ORDERS,
@@ -152,6 +181,12 @@ const orderActions = {
     return {
       type: orderActions.SELECTED_ORDERS,
       payload: orders,
+    };
+  },
+  showMessage: (message) => {
+    return {
+      type: orderActions.SHOW_MESSAGE,
+      payload: message,
     };
   },
 };

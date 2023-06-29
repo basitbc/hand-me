@@ -7,10 +7,9 @@ import products from "./products/reducer";
 import customers from "./customers/reducer";
 import priceList from "./priceList/reducer";
 import csv from "./csv/reducer";
-import accounts from "./accounts/reducer";
+import account from "./accounts/reducer";
 import cart from "./cart/reducer";
 import asyncStorage from "./asyncStorage/reducer";
-
 import order from "./orders/reducer";
 
 const createReducer = (asyncReducers) =>
@@ -23,7 +22,7 @@ const createReducer = (asyncReducers) =>
     priceList,
     order,
     asyncStorage,
-    accounts,
+    account,
     cart,
 
     router: routerReducer,

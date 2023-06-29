@@ -146,12 +146,6 @@ const OrdersInfoModal = ({ item }) => {
             </View>
             <FlatList data={item.products} renderItem={onRenderItem} />
 
-            {/* <TouchableOpacity
-              onPress={generateInvoice}
-              style={styles.generateButton}
-            >
-              <Text style={styles.generateButtonText}>Generate Invoice</Text>
-            </TouchableOpacity> */}
             <OrderInvoice order={item} />
           </View>
         </View>

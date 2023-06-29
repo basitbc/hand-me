@@ -152,7 +152,11 @@ const Home = (props) => {
             searchValue
           )}
           renderItem={onRenderItem}
+          ListEmptyComponent={() => (
+            <Text style={styles.noProductsText}>No products found</Text>
+          )}
         />
+
         {/* <View style={styles.inputContainer}>
           <DropDownPicker
             open={open}
@@ -188,7 +192,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
-  subContainer: {},
+  subContainer: {
+    flex: 1,
+  },
   inputContainer: {
     justifyContent: "center",
     alignItems: "center",
@@ -197,6 +203,15 @@ const styles = StyleSheet.create({
     marginTop: 10,
     width: "78%",
     alignSelf: "center",
+  },
+  noProductsText: {
+    fontSize: 18,
+    color: "red",
+    textAlign: "center",
+
+    marginTop: 20,
+    fontStyle: "italic",
+    // Add any other styling properties you desire
   },
 });
 

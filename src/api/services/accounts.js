@@ -17,6 +17,25 @@ const getAllAccounts = (adminId, callback) => {
     });
 };
 
+const getCustomerAccount = (
+  customerId,
+  selectedYear,
+  selectedMonth,
+  callback
+) => {
+  API({
+    method: "GET",
+    url: `${BASE_URL}/get-account-by-customerId/${customerId}/${selectedYear}/${selectedMonth}`,
+  })
+    .then((response) => {
+      callback({ status: "success", data: response.data });
+    })
+    .catch((err) => {
+      console.log(err, "error occurred in getting accounts");
+      callback({ status: "error" });
+    });
+};
+
 const addAccount = (newAccountData, callback) => {
   API({
     method: "POST",
@@ -66,6 +85,7 @@ const accounts = {
   deleteAccount,
   updateAccount,
   addAccount,
+  getCustomerAccount,
 };
 
 export default accounts;

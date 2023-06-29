@@ -8,6 +8,10 @@ const initialState = {
   activePanel: "All",
   filteredOrders: [],
   selectedOrders: [],
+  message: {
+    message: "",
+    success: false,
+  },
 };
 
 // Reducer for order actions
@@ -24,7 +28,6 @@ const orderReducer = (state = initialState, action) => {
         orders: action.payload,
       };
     }
-
     case orderActions.GET_ORDER_BY_ID:
       return {
         ...state,
@@ -60,6 +63,11 @@ const orderReducer = (state = initialState, action) => {
         ...state,
         selectedOrders: action.payload,
       };
+    case orderActions.SHOW_MESSAGE:
+      return {
+        ...state,
+        message: action.payload,
+      };
     case orderActions.SHOW_FILTERED_ORDERS:
       const filteredOrders =
         state?.orders &&
@@ -72,6 +80,11 @@ const orderReducer = (state = initialState, action) => {
       };
     case orderActions.RESET_STATE:
       return initialState;
+    case orderActions.CLEAR_MESSAGE:
+      return {
+        ...state,
+        message: initialState.message,
+      };
     default:
       return state;
   }

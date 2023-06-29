@@ -31,24 +31,30 @@ const MyCart = (props) => {
     cart,
     asyncStorage,
     placeOrder,
+    order,
+    showMessage,
+    auth,
+    account,
+    getAllOrders,
   } = props;
+  const creditLimit = auth?.customer?.user?.creditLimit;
+  const outstandingAmount = account?.account?.outstandingAmount;
+  useEffect(() => {
+    if (calculateGrandTotal() + outstandingAmount >= creditLimit) {
+      showMessage("");
+    }
+  }, [calculateGrandTotal]);
 
-  // useEffect(() => {
-  //   try {
-  //     // const cartItems = JSON.parse(asyncStorage?.asyncStorage.cart);
-  //     // cartItems.map((item) => {
-  //     //   addToCart(item);
-  //     // });
-  //   } catch (error) {
-  //     console.error("Error parsing asyncStorage data:", error);
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (order?.message?.success === true) {
+      navigation.navigate("Order");
+    }
+  }, [order?.message?.success]);
 
   const onRenderItem = ({ item }) => {
     return (
       <CartList
         // image={item.image}
-        navigation={navigation}
         item={item}
         qty={item.qty}
         productname={item.product}
@@ -68,7 +74,7 @@ const MyCart = (props) => {
     return total.toFixed(2);
   };
 
-  const onOrder = () => {
+  const onOrder = async () => {
     let orderData = {
       customerId: props?.auth?.customer?.user?._id,
       products: [],
@@ -82,30 +88,48 @@ const MyCart = (props) => {
         quantity: item.qty,
       });
     });
-
-    placeOrder(orderData);
-
-    navigation.navigate("Order");
+    console.log(orderData, "d");
+    const placedOrder = await placeOrder(orderData);
+    getAllOrders(auth?.customer?.user?._id);
+    console.log(order?.message?.success, "success");
+    // if (order?.message?.success === true) {
+    //   navigation.navigate("Order");
+    // }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <HeaderMenu title="My Cart" isFilter={true} isSetting={false} />
+      <HeaderMenu
+        title="My Cart"
+        isFilter={true}
+        isSetting={false}
+        navigation={navigation}
+        isBack={true}
+      />
       <View style={styles.subContainer}>
-        <FlatList data={cart?.cartItems} renderItem={onRenderItem} />
+        {cart.cartItems.length === 0 ? (
+          <View style={styles.emptyCartContainer}>
+            <Text style={styles.emptyCartText}>Cart is Empty</Text>
+          </View>
+        ) : (
+          <FlatList data={cart?.cartItems} renderItem={onRenderItem} />
+        )}
 
-        <View style={styles.buttonContainer}>
-          <Button
-            onPress={() => onOrder()}
-            backgroundColor={ThemeColor}
-            height={60}
-            width={widthScreen - 50}
-          >
-            <Text style={styles.buttonText}>
-              Order Now - {calculateGrandTotal()}
-            </Text>
-          </Button>
-        </View>
+        {cart.cartItems.length > 0 && (
+          <View style={styles.buttonContainer}>
+            <Text style={{ color: "red" }}>{order?.message?.message}</Text>
+            <Button
+              onPress={() => onOrder()}
+              backgroundColor={ThemeColor}
+              height={60}
+              width={widthScreen - 50}
+            >
+              <Text style={styles.buttonText}>
+                Order Now - {calculateGrandTotal()}
+              </Text>
+            </Button>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -114,7 +138,9 @@ const MyCart = (props) => {
 const mapStateToProps = (state) => ({
   cart: state.cart,
   auth: state.auth,
+  account: state.account,
   asyncStorage: state.asyncStorage,
+  order: state.order,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -124,6 +150,8 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(cartActions.updateCartItemQuantity(itemId, quantity, price)),
   clearCart: () => dispatch(cartActions.clearCart()),
   placeOrder: (data) => dispatch(orderActions.createOrder(data)),
+  showMessage: (data) => dispatch(orderActions.showMessage(data)),
+  getAllOrders: (customerId) => dispatch(orderActions.getAllOrders(customerId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyCart);
@@ -147,5 +175,21 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  emptyCartContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyCartText: {
+    fontSize: 18,
+    textAlign: "center",
+    marginTop: 20,
+    color: "gray",
+  },
+  addProductsButton: {
+    fontSize: 16,
+    marginTop: 10,
+    color: "blue",
   },
 });

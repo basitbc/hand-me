@@ -4,7 +4,6 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { Orders } from "../constants/Constants";
 
 export default function CartList({
-  navigation,
   item,
   image,
   productname,

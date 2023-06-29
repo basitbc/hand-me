@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   SafeAreaView,
-  ScrollView,
   Image,
   Dimensions,
 } from "react-native";
@@ -70,56 +69,56 @@ const ProductDetail = ({ route, navigation, addToCart }) => {
         isFilter={false}
         isCart={true}
         isSetting={true}
+        navigation={navigation}
       />
-      <ScrollView>
-        <View>
-          <Image
-            source={require("../../assets/product.png")}
-            // resizeMode="contain"
-            style={styles.productImg}
-          />
+      <View>
+        <Image
+          source={require("../../assets/product.png")}
+          // resizeMode="contain"
+          style={styles.productImg}
+        />
+      </View>
+      <View style={styles.content}>
+        <View style={styles.favsection}>
+          <Text style={styles.subheading}>
+            {route.params.item?.productId?.name}
+          </Text>
+          <Ionicons name={"heart-outline"} size={24} color={"#000"} />
         </View>
-        <View style={styles.content}>
-          <View style={styles.favsection}>
-            <Text style={styles.subheading}>
-              {route.params.item?.productId?.name}
-            </Text>
-            <Ionicons name={"heart-outline"} size={24} color={"#000"} />
+        <View>
+          <Text>{"by  K2Implex"}</Text>
+        </View>
+        <View style={[styles.favsection, { marginVertical: 15 }]}>
+          <View style={styles.countSection}>
+            <Ionicons
+              name={"remove-sharp"}
+              size={24}
+              onPress={() => {
+                const newQty = value.qty !== 1 ? value.qty - 1 : 1;
+                updateQuantity(newQty);
+              }}
+              color={"#000"}
+              style={{ paddingRight: 8 }}
+            />
+            <View style={styles.boxText}>
+              <Text>{value.qty}</Text>
+            </View>
+            <Ionicons
+              onPress={() => {
+                const newQty = value.qty + 1;
+                updateQuantity(newQty);
+              }}
+              name={"add"}
+              size={24}
+              color={"#000"}
+              style={styles.iconStyle}
+            />
           </View>
           <View>
-            <Text>{"by  K2Implex"}</Text>
+            <Text>{`₹${value?.item?.price}/Roll`}</Text>
           </View>
-          <View style={[styles.favsection, { marginVertical: 15 }]}>
-            <View style={styles.countSection}>
-              <Ionicons
-                name={"remove-sharp"}
-                size={24}
-                onPress={() => {
-                  const newQty = value.qty !== 1 ? value.qty - 1 : 1;
-                  updateQuantity(newQty);
-                }}
-                color={"#000"}
-                style={{ paddingRight: 8 }}
-              />
-              <View style={styles.boxText}>
-                <Text>{value.qty}</Text>
-              </View>
-              <Ionicons
-                onPress={() => {
-                  const newQty = value.qty + 1;
-                  updateQuantity(newQty);
-                }}
-                name={"add"}
-                size={24}
-                color={"#000"}
-                style={styles.iconStyle}
-              />
-            </View>
-            <View>
-              <Text>{`₹${value?.item?.price}/Roll`}</Text>
-            </View>
-          </View>
-          {/* <View>
+        </View>
+        {/* <View>
             <View style={{paddingVertical: 10}}>
               <Text>{'Size'}</Text>
             </View>
@@ -147,29 +146,28 @@ const ProductDetail = ({ route, navigation, addToCart }) => {
             <View style={styles.horizontalLine} />
           </View> */}
 
-          <View>
-            <Text style={styles.heading}>Product Detail</Text>
-            <Text>{item?.productId?.details}</Text>
-          </View>
-          <View style={{ alignItems: "center", paddingVertical: 25 }}>
-            <Button
-              onPress={() => onCart()}
-              backgroundColor={ThemeColor}
-              height={60}
-              width={widthScreen - 50}
-            >
-              <Text
-                style={styles.buttonText}
-              >{`Add to Cart - ₹${totalPrice}`}</Text>
-            </Button>
-          </View>
-          <View style={{ alignItems: "center", flexDirection: "row" }}>
-            <Text>Free standard shipping</Text>
-            <Text style={styles.underlineText}>Free returns</Text>
-          </View>
+        <View>
+          <Text style={styles.heading}>Product Detail</Text>
+          <Text>{item?.productId?.details}</Text>
         </View>
-        <View />
-      </ScrollView>
+        <View style={{ alignItems: "center", paddingVertical: 25 }}>
+          <Button
+            onPress={() => onCart()}
+            backgroundColor={ThemeColor}
+            height={60}
+            width={widthScreen - 50}
+          >
+            <Text
+              style={styles.buttonText}
+            >{`Add to Cart - ₹${totalPrice}`}</Text>
+          </Button>
+        </View>
+        <View style={{ alignItems: "center", flexDirection: "row" }}>
+          <Text>Free standard shipping</Text>
+          <Text style={styles.underlineText}>Free returns</Text>
+        </View>
+      </View>
+      <View />
     </SafeAreaView>
   );
 };

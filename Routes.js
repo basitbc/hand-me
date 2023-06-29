@@ -10,10 +10,11 @@ import Home from "./src/screens/Home/Home";
 import Transaction from "./src/screens/Transaction/Transaction";
 import Order from "./src/screens/Order/Order";
 import Products from "./src/screens/Explore/Products";
-import Favourite from "./src/screens/Explore/Favourite";
+import Account from "./src/screens/Explore/Account";
 import ProductDetail from "./src/screens/Explore/ProductDetail";
 import MyCart from "./src/screens/Order/MyCart";
 import otp from "./src/screens/Auth/otp";
+import PersonalDetails from "./src/screens/Explore/PersonalDetails";
 // import ForgotPassword from "./src/screens/Auth/otp";
 
 export default function Routes() {
@@ -69,7 +70,7 @@ export default function Routes() {
         <Tab.Screen name="Order" component={Order} />
         <Tab.Screen
           name="Landing"
-          component={Favourite}
+          component={Account}
           options={{ title: "Account" }}
         />
       </Tab.Navigator>
@@ -109,6 +110,11 @@ export default function Routes() {
           options={{ headerShown: false }}
           name="cart"
           component={MyCart}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="personalDetails"
+          component={PersonalDetails}
         />
       </Stack.Navigator>
     </NavigationContainer>

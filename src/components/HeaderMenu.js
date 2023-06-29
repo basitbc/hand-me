@@ -17,7 +17,7 @@ const HeaderMenu = ({
   isLogout,
 }) => {
   function handleOnBackPress() {
-    // navigation.goBack();
+    navigation.goBack();
   }
   const handleLogout = () => {
     logout();
@@ -25,7 +25,6 @@ const HeaderMenu = ({
   };
 
   const handleCart = () => {
-    logout();
     navigation.navigate("cart");
   };
   return (
@@ -34,7 +33,7 @@ const HeaderMenu = ({
         {isBack ? (
           <View style={styles.iconStyle}>
             <Ionicons
-              onPress={handleOnBackPress()}
+              onPress={() => navigation.goBack()}
               name={"chevron-back-sharp"}
               size={24}
               color={"#000"}
