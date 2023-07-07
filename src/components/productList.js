@@ -14,10 +14,14 @@ export default function ProductList({ item }) {
           <Text style={styles.contentText}> {item.quantity}</Text>
         </View>
         <View style={{ flex: 0.2 }}>
-          <Text style={styles.contentText}>${item.productId.defaultprice}</Text>
+          <Text style={styles.contentText}>
+            ₹{item.productId.defaultprice.toLocaleString("en-IN")}
+          </Text>
         </View>
         <View style={{ flex: 0.2 }}>
-          <Text style={styles.contentText}>${item.productId.defaultprice}</Text>
+          <Text style={styles.contentText}>
+            ₹{item.productId.defaultprice.toLocaleString("en-IN")}
+          </Text>
         </View>
       </View>
     </Card>

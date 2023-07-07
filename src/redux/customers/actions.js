@@ -41,9 +41,9 @@ const customerActions = {
     };
   },
 
-  updateCustomer: (customerId, updatedData) => {
+  updateGuestUser: (customerId, updatedData) => {
     return (dispatch) => {
-      customers.updateCustomer(customerId, updatedData, (response) => {
+      customers.updateGuestUser(customerId, updatedData, (response) => {
         if (response.status === "success") {
           dispatch(customerActions.getAllCustomers(updatedData?.adminId)); // Update the customers after update
         } else {

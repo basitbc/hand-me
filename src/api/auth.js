@@ -1,19 +1,40 @@
 import axios from "axios";
 import { serverConfig } from "./Configs/server-config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import API from "./index";
 
 const BASE_URL_AUTH = `${serverConfig.appServerUrl}/auth`;
 const BASE_URL = `${serverConfig.appServerUrl}/otp`;
+const BASE_URL_CUSTOMER = `${serverConfig.appServerUrl}/customer`;
 
 const authenticate = async (credentials) => {
   try {
-    const response = await axios.post(`${BASE_URL}/authenticate`, credentials);
+    const response = await axios.post(
+      `${BASE_URL_CUSTOMER}/authenticate`,
+      credentials
+    );
     const data = response;
     return data;
   } catch (error) {
     // Handle authentication error
     console.error("Authentication failed:", error);
     throw error;
+  }
+};
+
+const authenticateOtp = async (credentials) => {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/authenticateOtp`,
+      credentials
+    );
+    const data = response;
+    return data;
+  } catch (error) {
+    // Handle authentication error
+    console.error("Authentication failed:", error);
+    response = { success: false };
+    return response;
   }
 };
 
@@ -27,6 +48,21 @@ const sendOtp = async (email) => {
     console.error("Error in sending Otp:", error);
     throw error;
   }
+};
+
+const updateGuestUser = (customerId, updatedData, callback) => {
+  API({
+    method: "PUT",
+    url: `${BASE_URL_CUSTOMER}/updateGuestUser/${customerId}`,
+    data: updatedData,
+  })
+    .then((response) => {
+      callback({ status: "success", data: response.data });
+    })
+    .catch((err) => {
+      console.log(err, "error occurred in updating the customer");
+      callback({ status: "error" });
+    });
 };
 
 const checkEmail = async (email) => {
@@ -66,6 +102,8 @@ const auth = {
   checkEmail,
   getAllAsyncStorageData,
   sendOtp,
+  authenticateOtp,
+  updateGuestUser,
 };
 
 export default auth;

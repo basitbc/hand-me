@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableOpacity,
+  BackHandler,
 } from "react-native";
 import Logo from "../../assets/logo.png";
 import Button from "../../components/Button";
@@ -18,36 +19,49 @@ import AuthActions from "../../redux/auth/actions";
 import auth from "../../api/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import asyncStorageActions from "../../redux/asyncStorage/actions";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Auth = (props) => {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  // const handleLogin = () => {
-  //   navigation.navigate("Home");
-  // };
+  const { navigation } = props;
+  const handleForgotPassword = () => {
+    navigation.navigate("forgetPassword");
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        // Prevent going back to home screen
+        return true;
+      };
+
+      // Add event listener for the back button press
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      // Clean up the event listener on component unmount
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [])
+  );
 
   useEffect(() => {
     if (props?.auth?.isLogin && props?.auth?.customer.iat) {
+      props.navigation.navigate("userDetails");
     }
-    props.navigation.navigate("Home");
 
     props.getAsyncStorage();
-  }, []);
+  }, [props?.auth?.isLogin]);
 
-  useEffect(() => {
-    if (props?.auth?.otpStatus && props?.auth?.otpStatus?.IsPresent == true) {
-      console.log("in");
-      props.navigation.navigate("otp");
-      props.setCredentials({
-        email: email,
-      });
-    }
-  }, [props?.auth?.otpStatus]);
-
-  const handleSendOtp = () => {
+  const handleAuthentication = () => {
     // Implement your logic for handling the forgot password action here
     // For example, navigate to the forgot password screen or show a modal
-    props.sendOtp(email);
+    const credentials = {
+      email: email,
+      password: password,
+    };
+    props.authenticate(credentials);
   };
 
   return (
@@ -77,6 +91,19 @@ const Auth = (props) => {
                     onChange={(text) => setEmail(text)}
                   />
                 </View>
+                <View style={{ padding: 10 }}>
+                  <Input
+                    placeholder="Password"
+                    value={password}
+                    onChange={(text) => setPassword(text)}
+                    secureTextEntry={true}
+                  />
+                  {/* {isWrongPassword && (
+                    <Text style={styles.errorText}>
+                      {props.auth.errorMessage}
+                    </Text>
+                  )} */}
+                </View>
                 {props.auth.otpStatus && !props.auth.otpStatus.IsPresent && (
                   <Text
                     style={
@@ -88,13 +115,21 @@ const Auth = (props) => {
                     {props.auth.otpStatus.message}
                   </Text>
                 )}
+                <TouchableOpacity
+                  onPress={handleForgotPassword}
+                  style={styles.forgotPasswordContainer}
+                >
+                  <Text style={styles.forgotPasswordText}>
+                    Forgot Password?
+                  </Text>
+                </TouchableOpacity>
                 <View style={{ marginTop: 15 }}>
                   <Button
-                    onPress={handleSendOtp}
+                    onPress={handleAuthentication}
                     backgroundColor={ThemeColor}
                     height={50}
                   >
-                    <Text style={styles.loginBtnText}>Get OTP</Text>
+                    <Text style={styles.loginBtnText}>Login</Text>
                   </Button>
                 </View>
               </View>
@@ -174,6 +209,15 @@ const styles = StyleSheet.create({
   },
   successText: {
     color: "green",
+    fontSize: 16,
+  },
+  forgotPasswordContainer: {
+    marginTop: 10,
+    alignItems: "center",
+  },
+  forgotPasswordText: {
+    color: "blue",
+    textDecorationLine: "underline",
     fontSize: 16,
   },
 });

@@ -106,6 +106,7 @@ const Transaction = (props) => {
               </TouchableOpacity>
             </View>
           </View>
+          <YearMonthPicker />
 
           <View style={styles.subContainer}>
             <Card customStyle={styles.headingBorder}>
@@ -114,7 +115,7 @@ const Transaction = (props) => {
                   <Text style={styles.headingText}>{"ORDER NO."}</Text>
                 </View>
                 <View style={{ flex: 0.3 }}>
-                  <Text style={styles.headingText}>{"Total Amount"}</Text>
+                  <Text style={styles.headingaText}>{"Total Amount"}</Text>
                 </View>
                 <View style={{ flex: 0.3 }}>
                   <Text style={styles.headingText}>{"Status"}</Text>

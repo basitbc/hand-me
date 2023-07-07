@@ -11,7 +11,6 @@ const asyncStorageActions = {
         .getAllAsyncStorageData()
         .then((response) => {
           // const data = JSON.parse(response); // Console log the response
-          console.log(response, "res");
           dispatch({
             type: asyncStorageActions.GET_ASYNC_STORAGE,
             payload: response,

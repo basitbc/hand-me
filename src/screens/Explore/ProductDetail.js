@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   Image,
   Dimensions,
+  TextInput,
 } from "react-native";
 import HeaderMenu from "../../components/HeaderMenu";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -33,7 +34,6 @@ const ProductDetail = ({ route, navigation, addToCart }) => {
   const item = route.params.item;
 
   useEffect(() => {
-    console.log(item, "iitm");
     if (route.params) {
       setValue({
         ...value,
@@ -100,9 +100,17 @@ const ProductDetail = ({ route, navigation, addToCart }) => {
               color={"#000"}
               style={{ paddingRight: 8 }}
             />
-            <View style={styles.boxText}>
-              <Text>{value.qty}</Text>
-            </View>
+
+            <TextInput
+              style={styles.inputField}
+              value={value.qty.toString()}
+              onChangeText={(text) => {
+                const newQty = parseInt(text) || 0;
+                updateQuantity(newQty);
+              }}
+              keyboardType="numeric"
+            />
+
             <Ionicons
               onPress={() => {
                 const newQty = value.qty + 1;
@@ -115,36 +123,13 @@ const ProductDetail = ({ route, navigation, addToCart }) => {
             />
           </View>
           <View>
-            <Text>{`₹${value?.item?.price}/Roll`}</Text>
+            <Text>{`₹${value?.item?.price}/${
+              value?.item?.productId?.unit
+                ? value?.item?.productId?.unit
+                : "unit"
+            }`}</Text>
           </View>
         </View>
-        {/* <View>
-            <View style={{paddingVertical: 10}}>
-              <Text>{'Size'}</Text>
-            </View>
-            <View style={styles.favsection}>
-              <View style={styles.countSection}>
-                <View style={styles.sizeContainer}>
-                  <Text>{'S'}</Text>
-                </View>
-                <View style={styles.sizeContainer}>
-                  <Text>{'M'}</Text>
-                </View>
-                <View style={styles.sizeContainer}>
-                  <Text>{'L'}</Text>
-                </View>
-              </View>
-              <View>
-                <Ionicons
-                  name={'chevron-down-sharp'}
-                  size={24}
-                  color={'#000'}
-                  style={styles.iconStyle}
-                />
-              </View>
-            </View>
-            <View style={styles.horizontalLine} />
-          </View> */}
 
         <View>
           <Text style={styles.heading}>Product Detail</Text>
@@ -226,4 +211,13 @@ const styles = StyleSheet.create({
   iconStyle: { paddingHorizontal: 8 },
   underlineText: { paddingHorizontal: 20, textDecorationLine: "underline" },
   buttonText: { color: "#fff", fontSize: 14, fontWeight: "bold" },
+  inputField: {
+    width: 40,
+    height: 40,
+    borderWidth: 1,
+    borderColor: "#E2E2E2",
+    borderRadius: 5,
+    textAlign: "center",
+    marginHorizontal: 8,
+  },
 });

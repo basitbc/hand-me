@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TextInput, View } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Orders } from "../constants/Constants";
 
@@ -12,10 +12,6 @@ export default function CartList({
   onRemove,
   onUpdateQuantity,
 }) {
-  useEffect(() => {
-    console.log(item, "item here");
-  }, []);
-
   const handleUpdateQnty = (fun) => {
     if (false) {
     } else {
@@ -60,7 +56,17 @@ export default function CartList({
               />
             </View>
             <View style={{ paddingHorizontal: 8 }}>
-              <Text>{qty}</Text>
+              <TextInput
+                style={styles.inputField}
+                value={qty.toString()}
+                onChangeText={(text) => {
+                  const newQty = parseInt(text) || 0;
+                  const qtyDiff = newQty - qty;
+                  const priceDiff = qtyDiff * item.unitPrice;
+                  onUpdateQuantity(qtyDiff, priceDiff);
+                }}
+                keyboardType="numeric"
+              />
             </View>
             <View style={styles.boxText}>
               <Ionicons
@@ -153,5 +159,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginVertical: 15,
+  },
+  inputField: {
+    width: 40,
+    height: 40,
+    borderWidth: 1,
+    borderColor: "#E2E2E2",
+    borderRadius: 5,
+    textAlign: "center",
+    marginHorizontal: 8,
   },
 });

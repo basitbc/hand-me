@@ -14,11 +14,9 @@ export default function OrderList({
 
   if (status === "pending") {
     statusColor = "orange";
-  } else if (status === "delivered") {
-    statusColor = "blue";
-  } else if (status === "cancelled") {
+  } else if (status === "rejected") {
     statusColor = "red";
-  } else if (status === "completed") {
+  } else if (status === "accepted") {
     statusColor = "green";
   }
 

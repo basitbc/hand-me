@@ -20,7 +20,6 @@ const csvReducer = (state = initialState, action) => {
         },
       };
     case csvActions.HANDLE_CSV_MODAL:
-      console.log("handleCsv", action.payload);
       return {
         ...state,
         openCsv: action.payload,

@@ -52,6 +52,7 @@ const Account = (props) => {
         isSetting={false}
         navigation={navigation}
       />
+
       <View style={styles.subContainer}>
         <View style={styles.rowContainer}>
           <View style={styles.columnContainer}>
@@ -75,6 +76,9 @@ const Account = (props) => {
           </View>
         </View>
         {renderCreditMessage()}
+        <Text style={{ color: "black", fontSize: 15, fontWeight: "500" }}>
+          Logged In Guest: {auth?.guestUser?.guestName}
+        </Text>
         <FlatList data={menuList} renderItem={onRenderItem} />
         <View />
       </View>

@@ -52,7 +52,6 @@ const csvActions = {
     };
   },
   handleCsvModel: (open) => {
-    console.log("open", open);
     return (dispatch) => {
       dispatch({
         type: csvActions.HANDLE_CSV_MODAL,

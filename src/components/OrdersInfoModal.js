@@ -91,6 +91,16 @@ const OrdersInfoModal = ({ item }) => {
     }
   };
 
+  const getStatusStyle = (status) => {
+    if (status === "accepted") {
+      return styles.valueAccept; // Apply style for accepted status
+    } else if (status === "rejected") {
+      return styles.valueReject; // Apply style for rejected status
+    } else {
+      return styles.valuePending; // Apply style for pending status
+    }
+  };
+
   const onRenderItem = ({ item }) => {
     return <ProductList item={item} />;
   };
@@ -119,11 +129,21 @@ const OrdersInfoModal = ({ item }) => {
             </View>
             <View style={styles.infoContainer}>
               <Text style={styles.label}>Status:</Text>
-              <Text style={styles.value}>{item?.status}</Text>
+              <Text style={getStatusStyle(item?.status)}>{item?.status}</Text>
             </View>
+            {item?.status == "rejected" && (
+              <View style={styles.infoContainer}>
+                <Text style={styles.label}>Reason of rejection:</Text>
+                <Text style={styles.valueReject}>{item?.rejectionMessage}</Text>
+              </View>
+            )}
+
             <View style={styles.infoContainer}>
               <Text style={styles.label}>Total Amount:</Text>
-              <Text style={styles.value}>{item?.totalAmount}</Text>
+              <Text style={styles.value}>
+                ₹{" "}
+                {item?.totalAmount && item?.totalAmount.toLocaleString("en-IN")}
+              </Text>
             </View>
             <View>
               <Card customStyle={styles.headingBorder}>
@@ -196,8 +216,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginRight: 10,
   },
+  labelReject: {
+    flex: 1,
+    fontWeight: "bold",
+    marginRight: 10,
+    color: "red",
+  },
   value: {
     flex: 2,
+  },
+  valueReject: {
+    flex: 2,
+    color: "red",
   },
   generateButton: {
     backgroundColor: "#2196F3",

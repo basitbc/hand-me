@@ -22,6 +22,7 @@ import asyncStorageActions from "../../redux/asyncStorage/actions";
 const Auth = (props) => {
   const [otp, setOtp] = useState("");
   const [isWrongPassword, setisWrongPassword] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   // const handleLogin = () => {
   //   navigation.navigate("Home");
@@ -31,8 +32,23 @@ const Auth = (props) => {
     if (props?.auth?.isLogin && props?.auth?.customer.iat) {
       props.navigation.navigate("Home");
     }
+
     props.getAsyncStorage();
   }, [props?.auth?.isLogin]);
+
+  useEffect(() => {
+    if (props?.auth?.forgetPassword?.success === true) {
+      setSuccessMessage("Password has been send to your Email");
+    }
+    // if (props?.auth?.forgetPassword?.success === true) {
+    //   setisWrongPassword(true);
+    //   props.showError("Incorrect Otp");
+    //   setTimeout(() => {
+    //     props.clearError();
+    //     setisWrongPassword(false);
+    //   }, 3000);
+    // }
+  }, [props?.auth?.forgetPassword.success]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -44,24 +60,10 @@ const Auth = (props) => {
           otpValue: otp,
         };
         if (credentials.otpValue) {
-          console.log(credentials, "credentials");
-          props.authenticate(credentials);
-        }
-        console.log(props?.auth, "succcess");
-        if (props?.auth?.loginSuccess == true) {
-          props.navigation.navigate("Home");
-        } else {
-          setisWrongPassword(true);
-          props.showError("Incorrect Otp");
-          setTimeout(() => {
-            props.clearError();
-            setisWrongPassword(false);
-          }, 3000);
+          props.authenticateOtp(credentials);
         }
       } catch (error) {
         if (error) {
-          setisWrongPassword(true);
-          props.showError("Wrong credentials");
           setTimeout(() => {
             props.clearError();
             setisWrongPassword(false);
@@ -69,8 +71,7 @@ const Auth = (props) => {
           console.error("Bad Request: Password is incorrect");
         } else {
           console.error("Authentication failed:", error);
-          setisWrongPassword(true);
-          props.showError("Wrong credentials");
+
           setTimeout(() => {
             props.clearError();
             setisWrongPassword(false);
@@ -86,7 +87,6 @@ const Auth = (props) => {
       style={styles.container}
     >
       <View style={styles.subContainer}>
-        <Image source={Logo} resizeMode="contain" style={styles.logo} />
         <View>
           <View>
             <Card customStyle={{ padding: 15 }}>
@@ -97,10 +97,6 @@ const Auth = (props) => {
                   padding: 15,
                 }}
               >
-                <View style={styles.cardHeader}>
-                  <Text style={styles.loginText}>Dealer Login</Text>
-                </View>
-
                 {props.auth.otpStatus.IsPresent && (
                   <Text
                     style={
@@ -113,9 +109,11 @@ const Auth = (props) => {
                   </Text>
                 )}
 
+                <Text style={styles.successText}>{successMessage}</Text>
+
                 <View style={{ padding: 10 }}>
                   <Input
-                    placeholder="Otp"
+                    placeholder="Enter Otp"
                     value={otp}
                     onChange={(text) => setOtp(text)}
                     secureTextEntry={true}
@@ -133,7 +131,7 @@ const Auth = (props) => {
                     backgroundColor={ThemeColor}
                     height={50}
                   >
-                    <Text style={styles.loginBtnText}>Login</Text>
+                    <Text style={styles.loginBtnText}>Submit</Text>
                   </Button>
                 </View>
               </View>
@@ -158,11 +156,8 @@ const mapDispatchToProps = (dispatch) => ({
   sendOtp: (email) => {
     dispatch(AuthActions.sendOtp(email));
   },
-  authenticate: (credentials) => {
-    dispatch(AuthActions.authenticate(credentials));
-  },
-  setCredentials: (credentials) => {
-    dispatch(AuthActions.setCredentials(credentials));
+  authenticateOtp: (credentials) => {
+    dispatch(AuthActions.authenticateOtp(credentials));
   },
 });
 

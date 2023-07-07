@@ -30,7 +30,6 @@ const priceListReducer = (state = initialState, action) => {
       };
 
     case priceListActions.ADD_PRODUCT_PRICE:
-      console.log(action.payload);
       return {
         ...state,
         productPrice: action.payload,

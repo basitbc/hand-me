@@ -11,7 +11,6 @@ const Order = (props) => {
   const { getAllOrders, route, auth, order, navigation } = props;
   useEffect(() => {
     getAllOrders(auth?.customer?.user?._id);
-    console.log(order?.orders?.data?.products, "orders");
   }, []);
 
   const orders = order?.orders;

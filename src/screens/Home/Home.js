@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import Header from "../../components/Header";
 import Input from "../../components/Input";
-import DropDownPicker from "react-native-dropdown-picker";
 
 import ProductCard from "../../components/ProductCard";
 import { serviceCategory } from "../../constants/Constants";
@@ -42,10 +41,8 @@ const Home = (props) => {
 
   useEffect(() => {
     setProducts(serviceCategory);
-    console.log(auth, "auth in home");
     getAllPrices(auth?.customer?.user?._id);
     getAsyncStorage();
-    console.log(navigation);
   }, []);
 
   useFocusEffect(
@@ -98,36 +95,36 @@ const Home = (props) => {
   //   });
   // };
 
-  const filterProducts = (products, selectedButton, searchValue) => {
-    // Apply search filter
-    let filteredProducts =
-      products &&
-      products.filter((product) => {
-        if (searchValue) {
-          const productCode = product?.productId?.code || "";
-          return productCode.includes(searchValue);
-        }
-        return true;
-      });
+  // const filterProducts = (products, selectedButton, searchValue) => {
+  //   // Apply search filter
+  //   let filteredProducts =
+  //     products &&
+  //     products.filter((product) => {
+  //       if (searchValue) {
+  //         const productCode = product?.productId?.code || "";
+  //         return productCode.includes(searchValue);
+  //       }
+  //       return true;
+  //     });
 
-    // Apply availableAt filter
-    if (selectedButton) {
-      const Availability =
-        selectedButton === 1 ? null : selectedButton === 2 ? "mumbai" : "delhi";
-      filteredProducts =
-        filteredProducts &&
-        filteredProducts.filter((product) => {
-          const availableAt = product?.productId?.availableAt || "";
-          if (Availability === null) {
-            return true; // Show all products when buttonSelected is 1
-          } else {
-            return availableAt.toLowerCase() === Availability;
-          }
-        });
-    }
+  //   // Apply availableAt filter
+  //   if (selectedButton) {
+  //     const Availability =
+  //       selectedButton === 1 ? null : selectedButton === 2 ? "mumbai" : "delhi";
+  //     filteredProducts =
+  //       filteredProducts &&
+  //       filteredProducts.filter((product) => {
+  //         const availableAt = product?.productId?.availableAt || "";
+  //         if (Availability === null) {
+  //           return true; // Show all products when buttonSelected is 1
+  //         } else {
+  //           return availableAt.toLowerCase() === Availability;
+  //         }
+  //       });
+  //   }
 
-    return filteredProducts;
-  };
+  //   return filteredProducts;
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -142,15 +139,16 @@ const Home = (props) => {
           {/* <Input placeholder="Select the Category" />
           <Input placeholder="Select the Style" /> */}
         </View>
-        <View>
+        {/* <View>
           <ButtonGroup />
-        </View>
+        </View> */}
         <FlatList
-          data={filterProducts(
-            priceList?.prices?.data?.products,
-            props?.priceList.selectedButton,
-            searchValue
-          )}
+          // data={filterProducts(
+          //   priceList?.prices?.data?.products,
+          //   props?.priceList.selectedButton,
+          //   searchValue
+          // )}
+          data={priceList?.prices?.data?.products}
           renderItem={onRenderItem}
           ListEmptyComponent={() => (
             <Text style={styles.noProductsText}>No products found</Text>

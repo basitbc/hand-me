@@ -13,6 +13,9 @@ const initState = {
     otpValue: "",
   },
   loginSuccess: "",
+  isEmailValid: "",
+  guestUser: {},
+  forgetPassword: {},
 };
 
 export default function rootReducer(state = initState, action) {
@@ -28,6 +31,11 @@ export default function rootReducer(state = initState, action) {
       return {
         ...state,
         errorMessage: action.payload,
+      };
+    case authAction.UPDATE_GUEST_USER:
+      return {
+        ...state,
+        guestUser: action.payload,
       };
     case authAction.LOGOUT:
       AsyncStorage.clear();
@@ -70,6 +78,17 @@ export default function rootReducer(state = initState, action) {
         customer: action.payload,
         isLogin: true,
         loginSuccess: action.success,
+      };
+    case authAction.AUTHENTICATEOTP:
+      return {
+        ...state,
+        forgetPassword: action.payload,
+      };
+
+    case authAction.RESET_FORGET_PASSWORD:
+      return {
+        ...state,
+        forgetPassword: {},
       };
     case authAction.SET_CREDENTIALS:
       return {

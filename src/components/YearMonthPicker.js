@@ -24,7 +24,6 @@ const YearMonthPicker = (props) => {
   const handleDateConfirm = () => {
     // Handle the selected year and month here
     const selectedDate = `${selectedYear}/${selectedMonth}`;
-    console.log("Selected Date:", selectedDate);
     getCustomerAccount(auth?.customer?.user?._id, selectedYear, selectedMonth);
   };
 

@@ -32,21 +32,6 @@ const addCustomer = (newCustomerData, callback) => {
     });
 };
 
-const updateCustomer = (customerId, updatedData, callback) => {
-  API({
-    method: "PUT",
-    url: `${BASE_URL}/edit/${customerId}`,
-    data: updatedData,
-  })
-    .then((response) => {
-      callback({ status: "success", data: response.data });
-    })
-    .catch((err) => {
-      console.log(err, "error occurred in updating the customer");
-      callback({ status: "error" });
-    });
-};
-
 const deleteCustomer = (customerId, callback) => {
   API({
     method: "PUT",
@@ -64,7 +49,7 @@ const deleteCustomer = (customerId, callback) => {
 const customers = {
   getAllCustomers,
   deleteCustomer,
-  updateCustomer,
+
   addCustomer,
 };
 

@@ -14,6 +14,8 @@ import Account from "./src/screens/Explore/Account";
 import ProductDetail from "./src/screens/Explore/ProductDetail";
 import MyCart from "./src/screens/Order/MyCart";
 import otp from "./src/screens/Auth/otp";
+import userDetails from "./src/screens/Auth/UserDetails";
+import forgetPassword from "./src/screens/Auth/ForgetPassword";
 import PersonalDetails from "./src/screens/Explore/PersonalDetails";
 // import ForgotPassword from "./src/screens/Auth/otp";
 
@@ -94,6 +96,16 @@ export default function Routes() {
           options={{ headerShown: false }}
           name="otp"
           component={otp}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="userDetails"
+          component={userDetails}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="forgetPassword"
+          component={forgetPassword}
         />
         <Stack.Screen
           options={{ headerShown: false }}

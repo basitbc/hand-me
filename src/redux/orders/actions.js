@@ -25,7 +25,6 @@ const orderActions = {
         payload: true,
       });
       orders.createOrder(orderData, (response) => {
-        console.log(response, "rrrr1");
         if (response?.data?.result?.success === true) {
           dispatch({
             type: cartActions.CLEAR_CART,
@@ -49,7 +48,7 @@ const orderActions = {
           });
         } else {
           console.log("Error occurred in creating the order1");
-          console.log(response, "err");
+
           dispatch({
             type: orderActions.SHOW_MESSAGE,
             payload: response.data.result,

@@ -88,10 +88,8 @@ const MyCart = (props) => {
         quantity: item.qty,
       });
     });
-    console.log(orderData, "d");
     const placedOrder = await placeOrder(orderData);
     getAllOrders(auth?.customer?.user?._id);
-    console.log(order?.message?.success, "success");
     // if (order?.message?.success === true) {
     //   navigation.navigate("Order");
     // }
