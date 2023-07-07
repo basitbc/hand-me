@@ -41,18 +41,6 @@ const customerActions = {
     };
   },
 
-  updateGuestUser: (customerId, updatedData) => {
-    return (dispatch) => {
-      customers.updateGuestUser(customerId, updatedData, (response) => {
-        if (response.status === "success") {
-          dispatch(customerActions.getAllCustomers(updatedData?.adminId)); // Update the customers after update
-        } else {
-          console.log("Error occurred in updating the customer");
-        }
-      });
-    };
-  },
-
   addCustomer: (newCustomerData) => {
     return (dispatch) => {
       customers.addCustomer(newCustomerData, (response) => {
