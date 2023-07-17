@@ -6,6 +6,8 @@ import {
   SafeAreaView,
   FlatList,
   BackHandler,
+  TouchableOpacity,
+  RefreshControl,
 } from "react-native";
 import Header from "../../components/Header";
 import Input from "../../components/Input";
@@ -20,11 +22,16 @@ import asyncStorageActions from "../../redux/asyncStorage/actions";
 
 import { useFocusEffect } from "@react-navigation/native";
 import ButtonGroup from "../../components/ButtonGroup";
+import accountActions from "../../redux/accounts/actions";
+import orderActions from "../../redux/orders/actions";
 
 const Home = (props) => {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState(null);
-  const [products, setProducts] = useState([]);
+
+  const [refreshing, setRefreshing] = useState(false);
+  const currentYear = new Date().getFullYear().toString();
+  const currentMonth = new Date().getMonth().toString();
   const [items, setItems] = useState([
     { label: "Styles", value: "Styles" },
     { label: "Styles", value: "Styles" },
@@ -37,13 +44,27 @@ const Home = (props) => {
     getAsyncStorage,
     clearAsyncStorage,
     priceList,
+    getAllOrders,
+    getCustomerAccount,
   } = props;
 
   useEffect(() => {
-    setProducts(serviceCategory);
     getAllPrices(auth?.customer?.user?._id);
+
     getAsyncStorage();
   }, []);
+
+  const handleRefresh = () => {
+    // Implement your refresh logic here
+    setRefreshing(true);
+    getAllPrices(auth?.customer?.user?._id);
+    getAllOrders(auth?.customer?.user?._id);
+    getCustomerAccount(auth?.customer?.user?._id, currentYear, currentMonth);
+    // After refreshing is complete, setRefreshing to false
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -68,8 +89,9 @@ const Home = (props) => {
         image={item.imageName}
         productName={item?.productId?.name}
         availableAt={item?.productId?.availableAt}
-        productCode={item?.productId?.code}
+        productCode={item?.productId?.catalogueCode}
         navigation={navigation}
+        productPhoto={item?.productId?.productPhoto}
       />
     );
   };
@@ -134,7 +156,7 @@ const Home = (props) => {
           <Input
             onChange={onSearch}
             value={searchValue}
-            placeholder="Search For Product Code"
+            placeholder="Search For Catalogue Code"
           />
           {/* <Input placeholder="Select the Category" />
           <Input placeholder="Select the Style" /> */}
@@ -148,6 +170,9 @@ const Home = (props) => {
           //   props?.priceList.selectedButton,
           //   searchValue
           // )}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
           data={priceList?.prices?.data?.products}
           renderItem={onRenderItem}
           ListEmptyComponent={() => (
@@ -224,6 +249,11 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(priceListActions.getAllPrices(customerId)),
   getAsyncStorage: () => dispatch(asyncStorageActions.getAsyncStorage()),
   clearAsyncStorage: () => dispatch(asyncStorageActions.clearAsyncStorage()),
+  getAllOrders: (customerId) => dispatch(orderActions.getAllOrders(customerId)),
+  getCustomerAccount: (customerId, currentYear, currentMonth) =>
+    dispatch(
+      accountActions.getCustomerAccount(customerId, currentYear, currentMonth)
+    ),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

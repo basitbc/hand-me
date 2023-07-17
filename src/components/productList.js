@@ -8,19 +8,19 @@ export default function ProductList({ item }) {
     <Card customStyle={{ backgroundColor: "#FFF" }}>
       <View style={styles.cardContainer}>
         <View style={{ flex: 0.3 }}>
-          <Text style={styles.titleText}>{item.productId.name}</Text>
+          <Text style={styles.titleText}>{item.productId?.name}</Text>
         </View>
         <View style={{ flex: 0.2 }}>
           <Text style={styles.contentText}> {item.quantity}</Text>
         </View>
         <View style={{ flex: 0.2 }}>
           <Text style={styles.contentText}>
-            ₹{item.productId.defaultprice.toLocaleString("en-IN")}
+            ₹ {item.cost?.toLocaleString("en-IN")}
           </Text>
         </View>
         <View style={{ flex: 0.2 }}>
           <Text style={styles.contentText}>
-            ₹{item.productId.defaultprice.toLocaleString("en-IN")}
+            ₹ {(item?.cost * item?.quantity).toLocaleString("en-IN")}
           </Text>
         </View>
       </View>

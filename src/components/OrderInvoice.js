@@ -57,7 +57,7 @@ function OrderInvoice({ order }) {
               </tr>
               <tr>
                 <th>Order Date</th>
-                <td>${new Date(order.createdAt).toLocaleString()}</td>
+                <td>${new Date(order.createdAt)?.toLocaleString()}</td>
               </tr>
               <tr>
                 <th>Order Status</th>

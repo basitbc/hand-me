@@ -4,6 +4,7 @@ import API from "../index";
 const BASE_URL = `${serverConfig.appServerUrl}/order`;
 
 const createOrder = (orderData, callback) => {
+  console.log(orderData, "ooo");
   API({
     method: "POST",
     url: `${BASE_URL}/create-order`,

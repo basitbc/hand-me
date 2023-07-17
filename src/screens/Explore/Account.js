@@ -1,26 +1,45 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, SafeAreaView, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  FlatList,
+  RefreshControl,
+} from "react-native";
 import { FavouriteList } from "../../constants/Constants";
 import HeaderMenu from "../../components/HeaderMenu";
 import FavList from "../../components/FavList";
 import { connect } from "react-redux";
 import accountActions from "../../redux/accounts/actions";
+import authActions from "../../redux/auth/actions";
 
 const Account = (props) => {
   const { auth, navigation, account, getCustomerAccount } = props;
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     getCustomerAccount(auth?.customer?.user?._id);
+    props.authenticate(auth?.login);
   }, []);
 
   const creditLimit = auth?.customer?.user?.creditLimit;
   const outstandingAmount = account?.account?.outstandingAmount;
-
+  const handleRefresh = () => {
+    // Implement your refresh logic here
+    setRefreshing(true);
+    props.authenticate(auth?.login);
+    getAllPrices(auth?.customer?.user?._id);
+    // After refreshing is complete, setRefreshing to false
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  };
   const menuList = [
-    {
-      name: "Personal Settings",
-      icon: "ios-settings",
-    },
+    // {
+    //   name: "Personal Settings",
+    //   icon: "ios-settings",
+    // },
   ];
 
   const onRenderItem = ({ item }) => {
@@ -69,8 +88,10 @@ const Account = (props) => {
             </Text>
             <Text style={{ color: "red", fontSize: 22 }}>
               ₹{" "}
-              {account?.account?.outstandingAmount
-                ? account?.account?.outstandingAmount?.toLocaleString("en-IN")
+              {auth?.customer?.user?.outstandingAmount
+                ? auth?.customer?.user?.outstandingAmount?.toLocaleString(
+                    "en-IN"
+                  )
                 : 0}
             </Text>
           </View>
@@ -79,7 +100,13 @@ const Account = (props) => {
         <Text style={{ color: "black", fontSize: 15, fontWeight: "500" }}>
           Logged In Guest: {auth?.guestUser?.guestName}
         </Text>
-        <FlatList data={menuList} renderItem={onRenderItem} />
+        <FlatList
+          data={menuList}
+          renderItem={onRenderItem}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
+        />
         <View />
       </View>
     </SafeAreaView>
@@ -95,6 +122,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   getCustomerAccount: (customerId) =>
     dispatch(accountActions.getCustomerAccount(customerId)),
+  authenticate: (credentials) => {
+    dispatch(authActions.authenticate(credentials));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Account);

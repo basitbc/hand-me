@@ -62,7 +62,7 @@ function TransactionInvoice({ account }) {
           </head>
           <body>
             <h1>K2Implex</h1>
-            <h1>Balance Sheet</h1>
+            <h1>Ledger</h1>
             <table>
               <tr>
                 <th><strong>Name:</strong></th>
@@ -97,8 +97,8 @@ function TransactionInvoice({ account }) {
                     <td>${order?.orderId?.orderId}</td>
                     <td>${new Date(
                       order?.orderId?.createdAt
-                    ).toLocaleString()}</td>
-                    <td>${order?.orderId?.totalAmount.toLocaleString(
+                    )?.toLocaleString()}</td>
+                    <td>${order?.orderId?.totalAmount?.toLocaleString(
                       "en-IN"
                     )}</td>
                   </tr>
@@ -112,7 +112,7 @@ function TransactionInvoice({ account }) {
                       (sum, order) => sum + order?.orderId?.totalAmount,
                       0
                     )
-                    .toLocaleString("en-IN")}</td>
+                    ?.toLocaleString("en-IN")}</td>
                 </tr>
               </table>
 
@@ -132,7 +132,7 @@ function TransactionInvoice({ account }) {
                     <td>${order?.orderId?.orderId}</td>
                     <td>${new Date(
                       order?.orderId?.createdAt
-                    ).toLocaleString()}</td>
+                    )?.toLocaleString()}</td>
                     <td>${order?.orderId?.totalAmount?.toLocaleString(
                       "en-IN"
                     )}</td>
@@ -147,7 +147,7 @@ function TransactionInvoice({ account }) {
                       (sum, order) => sum + order?.orderId?.totalAmount,
                       0
                     )
-                    .toLocaleString("en-IN")}</td>
+                    ?.toLocaleString("en-IN")}</td>
                 </tr>
               </table>
             </div>
@@ -181,7 +181,7 @@ function TransactionInvoice({ account }) {
 
   return (
     <TouchableOpacity onPress={generatePDF} style={styles.generateButton}>
-      <Text style={styles.generateButtonText}>Generate Balance Sheet</Text>
+      <Text style={styles.generateButtonText}>Generate Ledger</Text>
     </TouchableOpacity>
   );
 }

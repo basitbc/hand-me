@@ -5,6 +5,7 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
+  RefreshControl,
   FlatList,
   TouchableOpacity,
 } from "react-native";
@@ -27,6 +28,16 @@ const Transaction = (props) => {
   const [selection, setSelection] = useState(1);
   const currentYear = new Date().getFullYear().toString();
   const currentMonth = new Date().getMonth().toString();
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    getCustomerAccount(auth?.customer?.user?._id, currentYear, currentMonth);
+
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
   useEffect(() => {
     getCustomerAccount(auth?.customer?.user?._id, currentYear, currentMonth);
   }, []);
@@ -59,7 +70,12 @@ const Transaction = (props) => {
   return (
     <SafeAreaView style={styles.container}>
       <Header />
-      <ScrollView>
+      <ScrollView
+        contentContainerStyle={styles.scrollView}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <View style={styles.subContainer}>
           <View style={styles.inputContainer}>
             <Text style={{ color: "black", fontSize: 22, fontWeight: 900 }}>

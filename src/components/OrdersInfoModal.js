@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -23,6 +23,10 @@ const OrdersInfoModal = ({ item }) => {
   const closeModal = () => {
     setModalVisible(false);
   };
+
+  useEffect(() => {
+    console.log(item, "i");
+  }, []);
 
   const generateInvoice = async (data) => {
     try {
@@ -129,7 +133,9 @@ const OrdersInfoModal = ({ item }) => {
             </View>
             <View style={styles.infoContainer}>
               <Text style={styles.label}>Status:</Text>
-              <Text style={getStatusStyle(item?.status)}>{item?.status}</Text>
+              <Text style={{ ...getStatusStyle(item?.status), flex: 2 }}>
+                {item?.status}
+              </Text>
             </View>
             {item?.status == "rejected" && (
               <View style={styles.infoContainer}>
@@ -142,7 +148,16 @@ const OrdersInfoModal = ({ item }) => {
               <Text style={styles.label}>Total Amount:</Text>
               <Text style={styles.value}>
                 ₹{" "}
-                {item?.totalAmount && item?.totalAmount.toLocaleString("en-IN")}
+                {item?.totalAmount &&
+                  item?.totalAmount?.toLocaleString("en-IN")}
+              </Text>
+            </View>
+
+            <View style={styles.infoContainer}>
+              <Text style={styles.label}>Ordered By:</Text>
+              <Text style={styles.value}>
+                {item?.orderedByName &&
+                  item?.orderedByName + "/" + item?.orderedByPhone}
               </Text>
             </View>
             <View>

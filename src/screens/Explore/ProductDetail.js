@@ -72,11 +72,19 @@ const ProductDetail = ({ route, navigation, addToCart }) => {
         navigation={navigation}
       />
       <View>
-        <Image
-          source={require("../../assets/product.png")}
-          // resizeMode="contain"
-          style={styles.productImg}
-        />
+        {item?.productId?.productPhoto ? (
+          <Image
+            source={{ uri: item?.productId?.productPhoto }}
+            // resizeMode="contain"
+            style={styles.productImg}
+          />
+        ) : (
+          <Image
+            source={require("../../assets/product.png")}
+            // resizeMode="contain"
+            style={styles.productImg}
+          />
+        )}
       </View>
       <View style={styles.content}>
         <View style={styles.favsection}>

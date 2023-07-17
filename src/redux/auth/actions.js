@@ -13,10 +13,17 @@ const authActions = {
   RESET_IS_VALID: "RESET_IS_VALID",
   UPDATE_GUEST_USER: "UPDATE_GUEST_USER",
   RESET_FORGET_PASSWORD: "RESET_FORGET_PASSWORD",
+  SET_LOGIN: "SET_LOGIN",
 
   setCredentials: (credentials) => {
     return {
       type: authActions.SET_CREDENTIALS,
+      payload: credentials,
+    };
+  },
+  setLogin: (credentials) => {
+    return {
+      type: authActions.SET_LOGIN,
       payload: credentials,
     };
   },
@@ -117,20 +124,41 @@ const authActions = {
   },
   authenticate: (credentials) => {
     return (dispatch) => {
-      auth.authenticate(credentials).then((response) => {
-        const token = response?.data?.token;
+      auth
+        .authenticate(credentials)
+        .then((response) => {
+          const token = response?.data?.token;
 
-        const decodedToken = jwtDecode(token);
-        if (response.status === 200) {
+          const decodedToken = jwtDecode(token);
+          if (response.status === 200) {
+            dispatch({
+              type: authActions.AUTHENTICATE,
+              payload: decodedToken,
+              success: response?.data?.success,
+            });
+            dispatch({
+              type: authActions.SET_LOGIN,
+              payload: credentials,
+            });
+          } else {
+            console.log("Error in sending code");
+          }
+        })
+        .catch((error) => {
+          // Handle authentication error
+          console.error("Authentication failed:", error);
           dispatch({
-            type: authActions.AUTHENTICATE,
-            payload: decodedToken,
-            success: response?.data?.success,
+            type: authActions.SHOWERROR,
+            payload: { message: "Invaid Credentials" },
           });
-        } else {
-          console.log("Error in sending code");
-        }
-      });
+          setTimeout(() => {
+            dispatch({
+              type: authActions.CLEARERROR,
+            });
+          }, 3000);
+          // You can choose to re-throw the error if needed
+          // throw error;
+        });
     };
   },
   authenticateOtp: (credentials) => {

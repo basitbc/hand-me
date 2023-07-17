@@ -26,6 +26,7 @@ const orderActions = {
       });
       orders.createOrder(orderData, (response) => {
         if (response?.data?.result?.success === true) {
+          dispatch(orderActions.getAllOrders(orderData?.customerId));
           dispatch({
             type: cartActions.CLEAR_CART,
           });

@@ -9,16 +9,25 @@ export default function ProductCard({
   availableAt,
   onCart,
   productCode,
+  productPhoto,
 }) {
   return (
     <Card customStyle={{ backgroundColor: "#F3F3F3" }}>
       <View style={styles.cardContainer}>
         <View style={{ flex: 0.4 }}>
-          <Image
-            source={require("../assets/product.png")}
-            resizeMode="contain"
-            style={styles.productImg}
-          />
+          {item?.productId?.productPhoto ? (
+            <Image
+              source={{ uri: productPhoto }}
+              resizeMode="contain"
+              style={styles.productImg}
+            />
+          ) : (
+            <Image
+              source={require("../assets/product.png")}
+              resizeMode="contain"
+              style={styles.productImg}
+            />
+          )}
         </View>
         <View style={{ flex: 0.6 }}>
           <View style={styles.labelStyle}>
@@ -36,7 +45,7 @@ export default function ProductCard({
             <Text style={styles.btnAtfilled}>{availableAt}</Text>
           </View>
           <View style={styles.labelStyle}>
-            <Text style={styles.titleText}>Product Code:</Text>
+            <Text style={styles.titleText}>Catalogue Code:</Text>
             <Text style={styles.contentText}>{productCode}</Text>
           </View>
           <View style={styles.buttonSpace}>

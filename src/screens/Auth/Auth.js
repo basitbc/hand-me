@@ -104,15 +104,9 @@ const Auth = (props) => {
                     </Text>
                   )} */}
                 </View>
-                {props.auth.otpStatus && !props.auth.otpStatus.IsPresent && (
-                  <Text
-                    style={
-                      props.auth.otpStatus.IsPresent == true
-                        ? styles.successText
-                        : styles.errorText
-                    }
-                  >
-                    {props.auth.otpStatus.message}
+                {props?.auth?.errorMessage?.message && (
+                  <Text style={styles?.errorText}>
+                    {props?.auth?.errorMessage?.message}
                   </Text>
                 )}
                 <TouchableOpacity

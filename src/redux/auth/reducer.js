@@ -16,6 +16,7 @@ const initState = {
   isEmailValid: "",
   guestUser: {},
   forgetPassword: {},
+  login: {},
 };
 
 export default function rootReducer(state = initState, action) {
@@ -94,6 +95,11 @@ export default function rootReducer(state = initState, action) {
       return {
         ...state,
         credentials: action.payload,
+      };
+    case authAction.SET_LOGIN:
+      return {
+        ...state,
+        login: action.payload,
       };
     default:
       return state;

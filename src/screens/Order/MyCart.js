@@ -18,6 +18,7 @@ import Button from "../../components/Button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import asyncStorageActions from "../../redux/asyncStorage/actions";
 import orderActions from "../../redux/orders/actions";
+import authActions from "../../redux/auth/actions";
 
 const widthScreen = Dimensions.get("window").width;
 
@@ -79,6 +80,8 @@ const MyCart = (props) => {
       customerId: props?.auth?.customer?.user?._id,
       products: [],
       totalAmount: calculateGrandTotal(),
+      orderedByName: props?.auth?.guestUser?.guestName,
+      orderedByPhone: props?.auth?.guestUser?.phone,
     };
 
     // Iterate over cart items and populate the products array
@@ -86,10 +89,13 @@ const MyCart = (props) => {
       orderData.products.push({
         productId: item.id,
         quantity: item.qty,
+        cost: item.unitPrice,
       });
     });
     const placedOrder = await placeOrder(orderData);
     getAllOrders(auth?.customer?.user?._id);
+    props.authenticate(auth?.login);
+
     // if (order?.message?.success === true) {
     //   navigation.navigate("Order");
     // }
@@ -150,6 +156,9 @@ const mapDispatchToProps = (dispatch) => ({
   placeOrder: (data) => dispatch(orderActions.createOrder(data)),
   showMessage: (data) => dispatch(orderActions.showMessage(data)),
   getAllOrders: (customerId) => dispatch(orderActions.getAllOrders(customerId)),
+  authenticate: (credentials) => {
+    dispatch(authActions.authenticate(credentials));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyCart);

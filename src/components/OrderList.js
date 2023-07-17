@@ -29,7 +29,7 @@ export default function OrderList({
         </View>
         <View style={{ flex: 0.3 }}>
           <Text style={styles.titleText}>
-            ₹ {totalAmount && totalAmount.toLocaleString("en-IN")}
+            ₹ {totalAmount && totalAmount?.toLocaleString("en-IN")}
           </Text>
         </View>
         <View style={{ flex: 0.3 }}>

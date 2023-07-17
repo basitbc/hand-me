@@ -1,17 +1,38 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, SafeAreaView, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  FlatList,
+  RefreshControl,
+} from "react-native";
 import OrderList from "../../components/OrderList";
 import { Orders } from "../../constants/Constants";
 import Card from "../../components/OrderCard";
 import HeaderMenu from "../../components/HeaderMenu";
 import { connect } from "react-redux";
 import orderActions from "../../redux/orders/actions";
+import authActions from "../../redux/auth/actions";
 
 const Order = (props) => {
+  const [refreshing, setRefreshing] = useState(false);
   const { getAllOrders, route, auth, order, navigation } = props;
   useEffect(() => {
     getAllOrders(auth?.customer?.user?._id);
   }, []);
+
+  const handleRefresh = () => {
+    // Implement your refresh logic here
+    setRefreshing(true);
+    getAllOrders(auth?.customer?.user?._id);
+    props.authenticate(auth?.login);
+
+    // After refreshing is complete, setRefreshing to false
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  };
 
   const orders = order?.orders;
 
@@ -55,7 +76,16 @@ const Order = (props) => {
           </View>
         </Card>
         {orders?.data?.length > 0 ? (
-          <FlatList data={orders.data} renderItem={onRenderItem} />
+          <FlatList
+            data={orders.data}
+            renderItem={onRenderItem}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+              />
+            }
+          />
         ) : (
           <Text style={styles.noOrdersText}>No orders found.</Text>
         )}
@@ -72,6 +102,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getAllOrders: (customerId) => dispatch(orderActions.getAllOrders(customerId)),
+  authenticate: (credentials) => {
+    dispatch(authActions.authenticate(credentials));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Order);

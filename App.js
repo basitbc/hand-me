@@ -27,6 +27,9 @@ export default function App() {
 
   React.useEffect(() => {
     // store.dispatch(productActions.getAllProducts());
+    if (auth?.login?.password?.length > 0) {
+      store.dispatch(authActions.authenticate(auth?.login));
+    }
   }, []);
 
   return (
