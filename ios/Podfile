@@ -21,7 +21,7 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'K2Implex' do
+target 'Handme' do
   config = use_native_modules!
 
   # Flags change depending on the env values.
@@ -43,7 +43,7 @@ target 'K2Implex' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  target 'K2ImplexTests' do
+  target 'HandmeTests' do
     inherit! :complete
     # Pods for testing
   end

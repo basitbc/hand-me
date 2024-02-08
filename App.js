@@ -1,10 +1,5 @@
 import * as React from "react";
-
-import { store } from "./src/redux/store";
-import { Provider } from "react-redux";
-import Routes from "./Routes";
-import authActions from "./src/redux/auth/actions";
-import productActions from "./src/redux/products/actions";
+import Routes from "./Routes"; // Importing the Routes component
 
 // To see all the requests in the Chrome DevTools network tab.
 if (typeof window !== "undefined") {
@@ -22,19 +17,11 @@ if (typeof window !== "undefined") {
 }
 
 export default function App() {
-  const auth = store.getState().auth;
-  console.log(auth, "auth");
 
-  React.useEffect(() => {
-    // store.dispatch(productActions.getAllProducts());
-    if (auth?.login?.password?.length > 0) {
-      store.dispatch(authActions.authenticate(auth?.login));
-    }
-  }, []);
 
   return (
-    <Provider store={store}>
-      <Routes />
-    </Provider>
+    <div>
+      <Routes /> 
+      </div>
   );
 }

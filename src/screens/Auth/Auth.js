@@ -1,34 +1,36 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
+  SafeAreaView,
   Image,
+  BackHandler,
+  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  TouchableOpacity,
-  BackHandler,
+  Keyboard,
 } from "react-native";
 import Logo from "../../assets/logo.png";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import Button from "../../components/Button";
-import Card from "../../components/Card";
-import Input from "../../components/Input";
-import { ThemeColor, White } from "../../utils/Colors";
+import image_back from "../../assets/image_back.png";
+import googleIcon from "../../assets/googleIcon.png";
+import { ThemeColor, White, Black, BackgroundColor, textColor1 } from "../../utils/Colors";
 import { connect } from "react-redux";
-import AuthActions from "../../redux/auth/actions";
-import auth from "../../api/auth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import asyncStorageActions from "../../redux/asyncStorage/actions";
 import { useFocusEffect } from "@react-navigation/native";
+import Input from "../../components/Input";
+import Header from "../../components/Header";
 
 const Auth = (props) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+
+  const handleLogin = () => {
+    navigation.navigate("Auth");
+  };
 
   const { navigation } = props;
-  const handleForgotPassword = () => {
-    navigation.navigate("forgetPassword");
-  };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -48,87 +50,62 @@ const Auth = (props) => {
 
   useEffect(() => {
     if (props?.auth?.isLogin && props?.auth?.customer.iat) {
-      props.navigation.navigate("userDetails");
+      props.navigation.navigate("Home");
     }
-
-    props.getAsyncStorage();
   }, [props?.auth?.isLogin]);
 
-  const handleAuthentication = () => {
-    // Implement your logic for handling the forgot password action here
-    // For example, navigate to the forgot password screen or show a modal
-    const credentials = {
-      email: email,
-      password: password,
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setIsKeyboardOpen(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setIsKeyboardOpen(false);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
     };
-    props.authenticate(credentials);
+  }, []);
+
+  const handleBack = () => {
+    Keyboard.dismiss();
   };
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : null}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 64} // Adjust offset based on platform
     >
-      <View style={styles.subContainer}>
-        <Image source={Logo} resizeMode="contain" style={styles.logo} />
-        <View>
-          <View>
-            <Card customStyle={{ padding: 15 }}>
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                  padding: 15,
-                }}
-              >
-                <View style={styles.cardHeader}>
-                  <Text style={styles.loginText}>Dealer Login</Text>
-                </View>
-                <View style={{ padding: 10 }}>
-                  <Input
-                    placeholder="Email"
-                    value={email}
-                    onChange={(text) => setEmail(text)}
-                  />
-                </View>
-                <View style={{ padding: 10 }}>
-                  <Input
-                    placeholder="Password"
-                    value={password}
-                    onChange={(text) => setPassword(text)}
-                    secureTextEntry={true}
-                  />
-                  {/* {isWrongPassword && (
-                    <Text style={styles.errorText}>
-                      {props.auth.errorMessage}
-                    </Text>
-                  )} */}
-                </View>
-                {props?.auth?.errorMessage?.message && (
-                  <Text style={styles?.errorText}>
-                    {props?.auth?.errorMessage?.message}
-                  </Text>
-                )}
-                <TouchableOpacity
-                  onPress={handleForgotPassword}
-                  style={styles.forgotPasswordContainer}
-                >
-                  <Text style={styles.forgotPasswordText}>
-                    Forgot Password?
-                  </Text>
-                </TouchableOpacity>
-                <View style={{ marginTop: 15 }}>
-                  <Button
-                    onPress={handleAuthentication}
-                    backgroundColor={ThemeColor}
-                    height={50}
-                  >
-                    <Text style={styles.loginBtnText}>Login</Text>
-                  </Button>
-                </View>
-              </View>
-            </Card>
-          </View>
+      <View style={styles.backgroundContainer}>
+        {!isKeyboardOpen && <Header navigation={navigation} />}
+        {isKeyboardOpen &&
+          <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+        <Ionicons name="chevron-back" size={30} color="black" style={styles.backIcon} />
+      </TouchableOpacity>
+      }
+        <View style={[styles.imageBackContainer, isKeyboardOpen ? { flex: 1 } : null]}>
+          <Image source={image_back} resizeMode="contain" style={[styles.imageBack,isKeyboardOpen ? { height: 320 } : null]} />
+        </View>
+      </View>
+
+      <View style={[styles.bottomContainer, isKeyboardOpen ? { flex: 3 } : null]}>
+        <Text style={styles.loginText}>Log in</Text>
+        <View style={styles.buttonsContainer}>
+          <Input label={"Email"} width={370} />
+          <View style={styles.blankContainer} />
+          <Input label={"Password"} width={370} />
+          <View style={styles.blankContainer2}></View>
+          <Button onPress={handleLogin} height={57} width={"94%"} backgroundColor={BackgroundColor}>
+            <Text style={styles.loginButton}>Let's go</Text>
+          </Button>
         </View>
       </View>
     </KeyboardAvoidingView>
@@ -139,79 +116,86 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  login: (data) => dispatch(AuthActions.login(data)),
-  showError: (errorMessage) => dispatch(AuthActions.showError(errorMessage)),
-  clearError: () => dispatch(AuthActions.clearError()),
-  resetIsValid: () => dispatch(AuthActions.resetIsValid()),
-  getAsyncStorage: () => dispatch(asyncStorageActions.getAsyncStorage()),
-  sendOtp: (email) => {
-    dispatch(AuthActions.sendOtp(email));
-  },
-  authenticate: (credentials) => {
-    dispatch(AuthActions.authenticate(credentials));
-  },
-  setCredentials: (credentials) => {
-    dispatch(AuthActions.setCredentials(credentials));
-  },
-});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Auth);
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: White,
+    backgroundColor: BackgroundColor,
   },
-  subContainer: {
+  logoContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  logo: {
-    width: "30%",
-    height: 200,
+  imageBackContainer: {
+    flex: 4,
   },
-  welcomeText: {
-    fontSize: 18,
-    fontWeight: "700",
-    textAlign: "center",
-    marginBottom: 50,
+  blankContainer: {
+    height: 7,
+  },
+  blankContainer2: {
+    height: 15,
+  },
+  imageBack: {
+    height: 400,
+    width: "100%",
+  },
+  logo: {
+    width: "50%",
+    height: 300,
+  },
+  bottomContainer: {
+    flex: 1.1,
+    backgroundColor: Black,
+  },
+  backgroundContainer: {
+    flex: 1.5,
+    backgroundColor: "transparent",
   },
   loginText: {
-    fontSize: 18,
-    fontWeight: "500",
-  },
-  cardHeader: {
-    margin: 10,
-  },
-  loginBtnText: {
-    color: White,
-    fontSize: 18,
-    fontWeight: "500",
-  },
-  errorText: {
-    color: "red",
-    fontSize: 16,
+    marginLeft: 20,
     marginTop: 10,
+    color: textColor1,
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    fontFamily: "Epilogue",
   },
-  linkText: {
-    color: "blue",
-    textDecorationLine: "underline",
-    marginTop: 10,
-    textAlign: "center",
-  },
-  successText: {
-    color: "green",
-    fontSize: 16,
-  },
-  forgotPasswordContainer: {
-    marginTop: 10,
+  buttonsContainer: {
     alignItems: "center",
   },
-  forgotPasswordText: {
-    color: "blue",
-    textDecorationLine: "underline",
+  loginButton: {
+    color: Black,
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+    fontFamily: "Epilogue",
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    marginRight: 10,
+  },
+  signUpLink: {
+    color: textColor1,
+    fontWeight: "bold",
+  },
+  bottomText: {
+    color: White,
     fontSize: 16,
+    marginBottom: 20,
+    fontFamily: "Epilogue",
+  },
+  backIcon: {
+position:"absolute",
+top:40,
+left:10,
+
+  },
+  backButton: {
+    zIndex: 1, 
   },
 });

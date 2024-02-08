@@ -17,6 +17,8 @@ export default function Button({
           width: width ? width : 250,
           height: height ? height : 40,
           backgroundColor: backgroundColor,
+          display:'flex',
+          flexDirection:'row'
         },
       ]}
       onPress={onPress}
@@ -35,5 +37,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: ThemeColor,
+    marginBottom:20
   },
 });
